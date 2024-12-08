@@ -6,10 +6,23 @@ import tensorflow as tf
 import numpy as np
 
 # Judul aplikasi
-st.header('Animal Classification CNN Model')
+st.markdown(
+    "<h1 style='text-align: center; color: #4CAF50;'>Animal Classification CNN Model</h1>",
+    unsafe_allow_html=True
+)
+
+# Deskripsi aplikasi
+st.markdown(
+    """
+    <p style='text-align: center; font-size: 18px; color: #555;'>
+    Unggah gambar hewan laut (kepiting, lobster, atau udang) dan model kami akan mengklasifikasikannya!
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
 # Daftar nama hewan sesuai prediksi model
-animal_names = ['Lobster', 'Udang', 'kepiting']
+animal_names = ['kepiting', 'lobster', 'udang']
 
 # Periksa keberadaan file model sebelum memuat
 model_path = 'animal_Recog_Model.h5'
@@ -28,11 +41,13 @@ else:
         # Melakukan prediksi menggunakan model
         predictions = model.predict(input_image_exp_dim)
         result = tf.nn.softmax(predictions[0])
-        outcome = f"The image belongs to '{animal_names[np.argmax(result)]}' with a score of {np.max(result) * 100:.2f}%"
+        outcome = f"The image belongs to '<b>{animal_names[np.argmax(result)]}</b>' with a score of {np.max(result) * 100:.2f}%"
         return outcome
 
     # Komponen upload file pada Streamlit
-    uploaded_file = st.file_uploader('Upload an Image', type=['jpg', 'jpeg', 'png'])
+    st.markdown("<h3 style='color: #4CAF50;'>Upload Your Image</h3>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader('', type=['jpg', 'jpeg', 'png'])
+    
     if uploaded_file is not None:
         # Buat direktori untuk menyimpan file jika belum ada
         upload_dir = 'upload'
@@ -44,7 +59,14 @@ else:
             f.write(uploaded_file.getbuffer())
 
         # Tampilkan gambar yang di-upload
-        st.image(file_path, width=200, caption="Uploaded Image")
+        st.image(file_path, use_column_width=True, caption="Uploaded Image")
 
         # Tampilkan hasil klasifikasi
-        st.markdown(classify_images(file_path))
+        st.markdown(
+            f"<div style='text-align: center; font-size: 20px; color: #333;'><b>Classification Result:</b></div>",
+            unsafe_allow_html=True
+        )
+        st.markdown(
+            f"<p style='text-align: center; font-size: 18px; color: #555;'>{classify_images(file_path)}</p>",
+            unsafe_allow_html=True
+        )
